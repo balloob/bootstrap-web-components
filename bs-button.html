@@ -8,6 +8,13 @@
 </head>
 <body>
   <div class='row'>
+    <label for='toggleLoading'>
+      <input type='checkbox' id='toggleLoading'>
+      Toggle loading state
+    </label>
+  </div>
+
+  <div class='row'>
     <bs-button>Hello</bs-button>
     <bs-button type='primary'>Hello</bs-button>
     <bs-button type='secondary'>Hello</bs-button>
@@ -36,9 +43,12 @@
     <bs-button small type='warning'>Hello</bs-button>
     <bs-button small type='link'>Hello</bs-button>
   </div>
-
 <template id='bs-button'>
   <style>
+    :host {
+      position: relative;
+    }
+
     button {
       display: inline-block;
       font-weight: 400;
@@ -641,9 +651,63 @@
       display: block;
       width: 100%;
     }
+
+    .spinner {
+      display: none;
+      position: absolute;
+      top: calc(50% - 9px);
+      left: calc(50% - 35px);
+      margin: 0 auto 0;
+      width: 70px;
+      text-align: center;
+    }
+
+    .spinner > div {
+      width: 5px;
+      height: 5px;
+      background-color: #FFF;
+
+      border-radius: 100%;
+      display: inline-block;
+      -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+      animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    }
+
+    .spinner .bounce1 {
+      -webkit-animation-delay: -0.32s;
+      animation-delay: -0.32s;
+    }
+
+    .spinner .bounce2 {
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+    }
+
+    :host([loading]) .content {
+      opacity: 0;
+    }
+
+    :host([loading]) .spinner {
+      display: block;
+    }
+
+    @keyframes sk-bouncedelay {
+      0%, 80%, 100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+      } 40% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+      }
+    }
   </style>
   <button type="button" id='btn'>
-    <slot></slot>
+    <div class='content'><slot></slot></div>
+    <div class="spinner">
+      <div class="bounce1"></div>
+      <div class="bounce2"></div>
+      <div class="bounce3"></div>
+    </div>
   </button>
 </template>
 
@@ -678,6 +742,16 @@ class BsButton extends HTMLElement {
 }
 
 customElements.define('bs-button', BsButton);
+
+document.getElementById('toggleLoading').addEventListener('click', ev => {
+  if (ev.target.checked) {
+    document.querySelectorAll('bs-button').forEach(
+      el => el.setAttribute('loading', 'loading'));
+  } else {
+    document.querySelectorAll('bs-button').forEach(
+      el => el.removeAttribute('loading'));
+  }
+});
 </script>
 </body>
 </html>
