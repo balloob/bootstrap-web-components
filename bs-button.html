@@ -727,17 +727,11 @@ class BsButton extends HTMLElement {
     const instance = templ.content.cloneNode(true);
     shadowRoot.appendChild(instance);
     this.button = shadowRoot.getElementById('btn');
-    this._processType();
-  }
-
-  _processType() {
-    const type = this.getAttribute('type');
-    const value = type ? `btn-${type}` : '';
-    this.button.setAttribute('class', value);
+    this.attributeChangedCallback('type', undefined, this.getAttribute('type'));
   }
 
   attributeChangedCallback(attrName, oldVal, newVal) {
-    this._processType();
+    this.button.setAttribute('class', newVal ? `btn-${newVal}` : '');
   }
 }
 
